@@ -1,13 +1,39 @@
 # -*- coding: utf-8 -*-
 
-from random import choice, randint
+from os import urandom
 from string import ascii_letters
 
+def generateRandChar():
+    '''Generates random ascii character using os.urandom'''
 
-def gen(limit):
-    '''Generator for cycle'''
-    for i in range(0, limit):
-        yield i
+    while True:
+        try:
+            rand_char = urandom(1)
+            rand_char = rand_char.decode('utf-8')
+        except UnicodeDecodeError:
+            continue
+
+        if rand_char in ascii_letters:
+            break
+
+    return rand_char
+
+
+def generateRandDigit():
+    '''Generate random digit using os.urandom'''
+
+    # Генерируем последовательность байтов
+    rand_bytes = urandom(1)
+    # Преобразуем ее в число, а потом в строку
+    rand_string = str(int.from_bytes(rand_bytes, byteorder='big'))
+
+    # Циклом ищем последний символ и берем его
+    for i in range(len(rand_string)):
+        i = int(i)
+        if i == (len(rand_string) - 1):
+            rand_char = rand_string[i]
+
+    return rand_char
 
 
 def main():
@@ -41,15 +67,25 @@ def main():
         else:
             break
 
-    # Генерация строки
-    for i in gen(length):
-        cycle_choice = randint(0, 1)
+    # Создаем генератор для цикла
+    gen = (i for i in range(length))
 
+    # Генерация строки
+    for i in gen:
+        # Генерируем цифру до тех пор, пока не будет 0 или 1
+        while True:
+            cycle_choice = int(generateRandDigit())
+
+            if cycle_choice == 0 or cycle_choice == 1:
+                break
+
+        # При 0 кидаем в пароль символ латиницы
         if cycle_choice == 0:
-            char = choice(ascii_letters)
+            char = generateRandChar()
             pwd += char
+        # При 1-е цифру
         else:
-            char = str(randint(0, 9))
+            char = generateRandDigit()
             pwd += char
 
     print(pwd)
