@@ -1,43 +1,55 @@
+# -*- coding: utf-8 -*-
+
 from random import choice, randint
 from string import ascii_letters
 
 
+def gen(limit):
+    '''Generator for cycle'''
+    for i in range(0, limit):
+        yield i
+
+
 def main():
+    # Output password
     pwd = ''
 
-    working = True
-    while working:
+    while True:
+        # Исключаем прерывания ввода
         try:
-            limit = input('Quantity of symbols: \n')
+            length = input('Quantity of symbols: \n')
         except KeyboardInterrupt as error:
             print(error)
 
             return 1
 
+        # Ловим ошибку преобразования типов
         try:
-            limit = int(limit)
+            length = int(length)
         except ValueError:
-            print('There is an error.')
+            print('There is an error. Try again')
 
-            return 1
+            continue
 
-        if limit <= 0:
+        # Проверка длины пароля
+        if length <= 0:
             print('You entered a negative number or number less than zero. Try again.')
             continue
-        elif limit > 30:
-            print('You entered a number more than 30. Try again.')
+        elif length > 35:
+            print('You entered a number more than 35. Try again.')
             continue
         else:
             break
 
-    for i in range(0, limit):
+    # Генерация строки
+    for i in gen(length):
         cycle_choice = randint(0, 1)
 
         if cycle_choice == 0:
             char = choice(ascii_letters)
             pwd += char
         else:
-            char = str(randint(0, 10))
+            char = str(randint(0, 9))
             pwd += char
 
     print(pwd)
